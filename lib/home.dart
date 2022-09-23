@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,27 +20,11 @@ class _HomeState extends State<Home> {
   );
   static const currentCameraPosition = CameraPosition(
     zoom: 14.46,
-    target: LatLng(27.704100, 85.322048),
+    target: LatLng(27.703097, 85.320373),
   );
 
-  Set<Marker> markersList = {
-    const Marker(
-      markerId: MarkerId('0'),
-      position: LatLng(27.704100, 85.322048),
-      infoWindow: InfoWindow(
-        title: 'Putalisadak',
-        snippet: 'Events Nepal',
-      ),
-    ),
-    const Marker(
-      markerId: MarkerId('1'),
-      position: LatLng(27.703211, 85.319880),
-      infoWindow: InfoWindow(
-        title: 'Bagbazar',
-        snippet: 'Events Nepal',
-      ),
-    ),
-  };
+  Set<Marker> markersList = {};
+  int markerId = 0;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -69,9 +54,23 @@ class _HomeState extends State<Home> {
           alignment: Alignment.topRight,
           children: [
             GoogleMap(
-              onMapCreated: (GoogleMapController mapController) {
-                _controller.complete(mapController);
+              onTap: (latlng) {
+                log('${latlng.latitude},${latlng.longitude}');
+                setState(() {
+                  markersList.add(
+                    Marker(
+                      markerId: MarkerId(markerId.toString()),
+                      position: LatLng(latlng.latitude, latlng.longitude),
+                      infoWindow: InfoWindow(
+                        title: 'Bagbazar',
+                        snippet: '${latlng.latitude},${latlng.longitude}',
+                      ),
+                    ),
+                  );
+                  markerId = markerId + 1;
+                });
               },
+              onMapCreated: onMapCreated,
               markers: markersList,
               mapType: isSat ? MapType.satellite : MapType.normal,
               initialCameraPosition: currentCameraPosition,
@@ -93,6 +92,10 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  void onMapCreated(GoogleMapController mapController) {
+    _controller.complete(mapController);
   }
 
   Future gotoDes() async {
