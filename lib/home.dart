@@ -15,12 +15,31 @@ class _HomeState extends State<Home> {
   bool isSat = false;
   static const destiationCameraPosition = CameraPosition(
     zoom: 14.46,
-    target: LatLng(43.721998, -79.545075),
+    target: LatLng(27.910433, 84.886283),
   );
   static const currentCameraPosition = CameraPosition(
     zoom: 14.46,
     target: LatLng(27.704100, 85.322048),
   );
+
+  Set<Marker> markersList = {
+    const Marker(
+      markerId: MarkerId('0'),
+      position: LatLng(27.704100, 85.322048),
+      infoWindow: InfoWindow(
+        title: 'Putalisadak',
+        snippet: 'Events Nepal',
+      ),
+    ),
+    const Marker(
+      markerId: MarkerId('1'),
+      position: LatLng(27.703211, 85.319880),
+      infoWindow: InfoWindow(
+        title: 'Bagbazar',
+        snippet: 'Events Nepal',
+      ),
+    ),
+  };
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -53,7 +72,7 @@ class _HomeState extends State<Home> {
               onMapCreated: (GoogleMapController mapController) {
                 _controller.complete(mapController);
               },
-              markers: const {},
+              markers: markersList,
               mapType: isSat ? MapType.satellite : MapType.normal,
               initialCameraPosition: currentCameraPosition,
             ),
